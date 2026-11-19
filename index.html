@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Code Folders</title>
+<style>
+:root{--bg:#f3f5f7;--panel:#fff;--ink:#1b2430;--mute:#6b7785;--line:#d6dde4;--acc:#0b6bcb;--hit:#fff0b3;--sel:#cfe4ff;--gut:#e9eef3;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12171d;--panel:#1a2129;--ink:#e6ebf0;--mute:#8d99a6;--line:#2c3641;--acc:#5aa9ff;--hit:#5a4a10;--sel:#1f4673;--gut:#161c23;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12171d;--panel:#1a2129;--ink:#e6ebf0;--mute:#8d99a6;--line:#2c3641;--acc:#5aa9ff;--hit:#5a4a10;--sel:#1f4673;--gut:#161c23;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+.page{height:100%;display:none;flex-direction:column}
+.page.on{display:flex}
+button{font:inherit;color:var(--ink)}
+button:focus-visible,input:focus{outline:2px solid var(--acc);outline-offset:1px}
+
+/* Page 1: folders */
+#home h1{font-size:20px;margin:0;padding:14px 14px 4px}
+#mk{display:flex;gap:8px;padding:10px 14px}
+#fname{flex:1;min-width:0;padding:11px 12px;font:inherit;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink)}
+#mkb{padding:0 16px;border:0;border-radius:8px;background:var(--acc);color:#fff;font-weight:600;cursor:pointer}
+#list{flex:1;overflow:auto;padding:4px 14px 14px}
+.f{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 10px 10px 14px;margin-bottom:8px}
+.f .nm{flex:1;min-width:0;cursor:pointer}
+.f .nm b{display:block;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.f .nm small{color:var(--mute);font-size:12px}
+.f button{padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);cursor:pointer;font-size:13px}
+.f button.d{color:#c0392b}
+#empty{color:var(--mute);text-align:center;padding:40px 20px}
+
+/* Page 2: editor */
+#hd{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--panel);border-bottom:1px solid var(--line)}
+#back{padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);cursor:pointer}
+#title{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#top{padding:10px;background:var(--panel);border-bottom:1px solid var(--line)}
+#q{width:100%;padding:11px 12px;font:inherit;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+#res{max-height:34vh;overflow:auto;margin-top:8px;display:none;border:1px solid var(--line);border-radius:8px}
+#res div{padding:7px 10px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;gap:10px;font:13px/1.3 ui-monospace,Menlo,Consolas,monospace}
+#res div:last-child{border:0}
+#res b{color:var(--acc);min-width:64px;font-weight:600}
+#res span{overflow:hidden;text-overflow:ellipsis;white-space:pre}
+#cnt{font-size:13px;color:var(--mute);margin-top:6px}
+#bar{display:flex;gap:6px;padding:8px 10px;overflow-x:auto;background:var(--panel);border-bottom:1px solid var(--line);align-items:center}
+#bar button{flex:none;padding:8px 11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-size:14px;cursor:pointer}
+#bar button:disabled{opacity:.4}
+#bar button.danger{color:#c0392b}
+#bar button.main{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+#bar button.main:disabled{opacity:.4}
+#info{flex:none;font-size:13px;color:var(--mute);margin-right:4px}
+#ed{flex:1;display:flex;min-height:0;position:relative}
+#gut{width:56px;overflow:hidden;background:var(--gut);border-right:1px solid var(--line);padding:8px 0;flex:none;user-select:none}
+#gut div{height:21px;text-align:right;padding-right:8px;font:13px/21px ui-monospace,Menlo,Consolas,monospace;color:var(--mute);cursor:pointer}
+#gut div.hit{background:var(--hit);color:var(--ink)}
+#gut div.sel{background:var(--sel);color:var(--ink);font-weight:700}
+#ta{flex:1;border:0;resize:none;padding:8px 10px;background:var(--panel);color:var(--ink);font:13px/21px ui-monospace,Menlo,Consolas,monospace;white-space:pre;overflow:auto;tab-size:4;min-width:0}
+#ta:focus{outline:none}
+</style>
+</head>
+<body>
+
+<!-- PAGE 1: FOLDERS -->
+<div id="home" class="page on">
+  <h1>मेरे फ़ोल्डर</h1>
+  <div id="mk">
+    <input id="fname" placeholder="फ़ोल्डर का नाम (जैसे: Game)" autocomplete="off">
+    <button id="mkb">+ बनाएँ</button>
+  </div>
+  <div id="list"></div>
+</div>
+
+<!-- PAGE 2: EDITOR -->
+<div id="editor" class="page">
+  <div id="hd"><button id="back">← Back</button><span id="title"></span></div>
+  <div id="top">
+    <input id="q" type="search" placeholder="कोड के शब्द खोजें… (Search code)" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <div id="cnt"></div>
+    <div id="res"></div>
+  </div>
+  <div id="bar">
+    <span id="info">लाइन नंबर पर टैप करें</span>
+    <button id="bUndo" disabled>↶ Undo</button>
+    <button id="bRep" class="main" disabled>Replace</button>
+    <button id="bCut" disabled>Cut</button>
+    <button id="bCopy" disabled>Copy</button>
+    <button id="bDel" class="danger" disabled>Delete</button>
+    <button id="bAbove" disabled>Add above</button>
+    <button id="bBelow" disabled>Add below</button>
+    <button id="bPaste" disabled>Paste below</button>
+    <button id="bAll">Copy all</button>
+    <button id="bClear">Clear</button>
+  </div>
+  <div id="ed">
+    <div id="gut"></div>
+    <textarea id="ta" wrap="off" spellcheck="false" autocapitalize="off" autocorrect="off" placeholder="यहाँ कोड paste करें… (Paste your code here)"></textarea>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+/* ---------- storage ---------- */
+let folders=[],cur=null;
+function load(){
+  try{folders=JSON.parse(localStorage.getItem('le-folders')||'[]')}catch(e){folders=[]}
+  if(!folders.length){
+    try{const old=localStorage.getItem('le-code');
+      if(old){folders.push({id:Date.now(),name:'Old code',code:old,t:Date.now()});persist()}}catch(e){}
+  }
+}
+function persist(){try{localStorage.setItem('le-folders',JSON.stringify(folders))}catch(e){}}
+
+/* ---------- page 1 ---------- */
+function showHome(){
+  $('editor').classList.remove('on');$('home').classList.add('on');cur=null;renderList();
+}
+function renderList(){
+  const L=$('list');
+  if(!folders.length){L.innerHTML='<div id="empty">अभी कोई फ़ोल्डर नहीं है।<br>ऊपर नाम डालकर पहला फ़ोल्डर बनाइए।</div>';return}
+  L.innerHTML=folders.map(f=>{
+    const n=f.code?f.code.split('\n').length:0;
+    return '<div class="f"><div class="nm" data-open="'+f.id+'"><b>'+esc(f.name)+'</b><small>'+n+' lines · '+new Date(f.t).toLocaleDateString()+'</small></div>'+
+      '<button data-ren="'+f.id+'">Rename</button><button class="d" data-del="'+f.id+'">Delete</button></div>';
+  }).join('');
+}
+function createFolder(){
+  const name=$('fname').value.trim();
+  if(!name)return $('fname').focus();
+  const f={id:Date.now(),name,code:'',t:Date.now()};
+  folders.unshift(f);persist();$('fname').value='';openFolder(f.id);
+}
+$('mkb').onclick=createFolder;
+$('fname').addEventListener('keydown',e=>{if(e.key==='Enter')createFolder()});
+$('list').addEventListener('click',e=>{
+  const t=e.target.closest('[data-open],[data-ren],[data-del]');if(!t)return;
+  if(t.dataset.open)openFolder(+t.dataset.open);
+  else if(t.dataset.ren){
+    const f=folders.find(x=>x.id==t.dataset.ren),n=prompt('नया नाम',f.name);
+    if(n&&n.trim()){f.name=n.trim();persist();renderList()}
+  }else if(t.dataset.del){
+    const f=folders.find(x=>x.id==t.dataset.del);
+    if(confirm('"'+f.name+'" फ़ोल्डर और उसका कोड मिटाएँ?')){folders=folders.filter(x=>x!==f);persist();renderList()}
+  }
+});
+
+/* ---------- page 2 ---------- */
+const ta=$('ta'),gut=$('gut'),q=$('q'),res=$('res'),cnt=$('cnt'),info=$('info');
+let sel=0,hits=new Set(),buf='';
+let hist=[],lastVal='',typing=false,typTimer=null;
+
+function pushHist(v){
+  if(hist[hist.length-1]===v)return;
+  hist.push(v);if(hist.length>200)hist.shift();
+}
+function openFolder(id){
+  cur=folders.find(x=>x.id===id);if(!cur)return;
+  $('home').classList.remove('on');$('editor').classList.add('on');
+  $('title').textContent=cur.name;ta.value=cur.code||'';q.value='';sel=0;hits=new Set();
+  hist=[];typing=false;
+  res.style.display='none';cnt.textContent='';render();ta.scrollTop=0;
+}
+$('back').onclick=()=>{save();showHome()};
+const lines=()=>ta.value.split('\n');
+const setLines=a=>{pushHist(ta.value);typing=false;ta.value=a.join('\n');save();render()};
+function save(){if(!cur)return;cur.code=ta.value;cur.t=Date.now();persist()}
+function render(){
+  const n=lines().length;let h='';
+  for(let i=1;i<=n;i++)h+='<div data-n="'+i+'" class="'+(hits.has(i)?'hit ':'')+(i===sel?'sel':'')+'">'+i+'</div>';
+  gut.innerHTML=h;gut.scrollTop=ta.scrollTop;
+  const on=sel>0&&sel<=n;
+  ['bCut','bCopy','bDel','bAbove','bBelow','bPaste','bRep'].forEach(b=>$(b).disabled=!on);
+  $('bUndo').disabled=!hist.length;
+  info.textContent=on?'लाइन '+sel+' चुनी गई':'लाइन नंबर पर टैप करें';
+  lastVal=ta.value;
+}
+function pick(n){
+  const a=lines();if(n<1||n>a.length)return;
+  sel=n;let s=0;for(let i=0;i<n-1;i++)s+=a[i].length+1;
+  ta.setSelectionRange(s,s+a[n-1].length);
+  ta.scrollTop=Math.max(0,(n-4)*21);render();
+}
+gut.addEventListener('click',e=>{const n=+e.target.dataset.n;if(n)pick(n)});
+ta.addEventListener('input',()=>{
+  if(!typing)pushHist(lastVal);
+  typing=true;clearTimeout(typTimer);typTimer=setTimeout(()=>typing=false,700);
+  save();render();if(q.value)search();
+});
+ta.addEventListener('scroll',()=>{gut.scrollTop=ta.scrollTop});
+function search(){
+  const t=q.value.toLowerCase();hits=new Set();res.innerHTML='';
+  if(!t){res.style.display='none';cnt.textContent='';render();return}
+  const a=lines();let html='';
+  a.forEach((l,i)=>{if(l.toLowerCase().includes(t)){hits.add(i+1);
+    html+='<div data-n="'+(i+1)+'"><b>Line '+(i+1)+'</b><span>'+esc(l.trim().slice(0,120))+'</span></div>'}});
+  cnt.textContent=hits.size?hits.size+' जगह मिला':'कुछ नहीं मिला';
+  res.innerHTML=html;res.style.display=hits.size?'block':'none';render();
+}
+q.addEventListener('input',search);
+res.addEventListener('click',e=>{const d=e.target.closest('div');if(d)pick(+d.dataset.n)});
+async function copyText(t){try{await navigator.clipboard.writeText(t)}catch(e){}buf=t}
+function askPaste(){return new Promise(res=>{
+  const o=document.createElement('div');
+  o.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:99';
+  o.innerHTML='<div style="background:var(--panel);color:var(--ink);border-radius:12px;padding:14px;width:100%;max-width:520px"><div style="margin-bottom:8px">कॉपी किया हुआ कोड यहाँ paste कीजिए (बॉक्स पर देर तक दबाकर Paste)</div><textarea id="pbox" style="width:100%;height:30vh;font:13px ui-monospace,monospace;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px;white-space:pre"></textarea><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button id="pc" style="padding:8px 14px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)">Cancel</button><button id="pok" style="padding:8px 14px;border:0;border-radius:8px;background:var(--acc);color:#fff;font-weight:600">OK</button></div></div>';
+  document.body.appendChild(o);
+  const b=o.querySelector('#pbox');b.focus();
+  const done=v=>{o.remove();res(v)};
+  o.querySelector('#pc').onclick=()=>done(null);
+  o.querySelector('#pok').onclick=()=>done(b.value.replace(/\r\n/g,'\n')||null);
+})}
+
+async function getClip(){
+  let t='';
+  try{t=await navigator.clipboard.readText()}catch(e){}
+  if(!t)return await askPaste();
+  return t.replace(/\r\n/g,'\n');
+}
+
+$('bUndo').onclick=()=>{
+  if(!hist.length)return;
+  ta.value=hist.pop();typing=false;
+  if(sel>lines().length)sel=0;
+  save();if(q.value)search();else render();
+  if(sel)pick(sel);
+};
+$('bRep').onclick=async()=>{
+  const t=await getClip();if(t===null)return;
+  const add=t.replace(/\n$/,'').split('\n'),a=lines();
+  a.splice(sel-1,1,...add);setLines(a);pick(sel);
+};
+$('bCopy').onclick=()=>copyText(lines()[sel-1]);
+$('bCut').onclick=async()=>{const a=lines();await copyText(a[sel-1]);a.splice(sel-1,1);if(!a.length)a.push('');setLines(a);sel=Math.min(sel,a.length);pick(sel)};
+$('bDel').onclick=()=>{const a=lines();a.splice(sel-1,1);if(!a.length)a.push('');setLines(a);sel=Math.min(sel,a.length);pick(sel)};
+$('bAbove').onclick=()=>{const a=lines();a.splice(sel-1,0,'');setLines(a);pick(sel)};
+$('bBelow').onclick=()=>{const a=lines();a.splice(sel,0,'');setLines(a);pick(sel+1)};
+$('bPaste').onclick=async()=>{
+  const t=await getClip();if(t===null)return;
+  const a=lines(),add=t.split('\n');a.splice(sel,0,...add);setLines(a);pick(sel+1);
+};
+$('bAll').onclick=()=>copyText(ta.value);
+$('bClear').onclick=()=>{
+  if(ta.value&&!confirm('इस फ़ोल्डर का सारा कोड मिटाएँ? (Undo से वापस आ जाएगा)'))return;
+  pushHist(ta.value);typing=false;ta.value='';sel=0;save();search();render();
+};
+window.addEventListener('pagehide',save);
+
+load();renderList();
+</script>
+</body>
+</html>
