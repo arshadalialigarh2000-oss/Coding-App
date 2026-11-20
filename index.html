@@ -223,6 +223,14 @@ function search(){
   res.innerHTML=html;res.style.display=matches.length?'block':'none';render();
 }
 q.addEventListener('input',()=>{
+  q.addEventListener('paste',e=>{
+  e.preventDefault();
+  const t=(e.clipboardData||window.clipboardData).getData('text').replace(/\r\n/g,'\n');
+  q.value=t;
+  q.style.height='44px';q.style.height=Math.min(q.scrollHeight+2,100)+'px';
+  q.scrollTop=0;
+  search();
+});
   q.style.height='44px';q.style.height=Math.min(q.scrollHeight+2,100)+'px';search();
 });
 res.addEventListener('click',e=>{const d=e.target.closest('div');if(d)pick(+d.dataset.a,+d.dataset.b)});
